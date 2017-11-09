@@ -21,17 +21,20 @@ num_classes = len(classes)
 
 # 20% of the data will automatically be used for validation
 validation_size = 0.2
+test_size = 0.2
 img_size = 128
 num_channels = 3
-train_path='training_data'
+train_path='training_data/to_test'
 
 # We shall load all the training and validation images and labels into memory using openCV and use that during training
-data = dataset.read_train_sets(train_path, img_size, classes, validation_size=validation_size)
+data = dataset.read_train_sets(train_path, img_size, classes, validation_size=validation_size, test_size=test_size)
 
 
 print('Complete reading input data. Will Now print a snippet of it')
 print('Number of files in Training-set:\t\t{}'.format(len(data.train.labels)))
 print('Number of files in Validation-set:\t{}'.format(len(data.valid.labels)))
+print('Number of files in Test-set:\t{}'.format(len(data.test.labels)))
+
 
 
 
