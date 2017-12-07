@@ -5,8 +5,8 @@ import glob
 ## Resizes images to 224 x 224  ##
 ##################################
 
-def resize_images(data_path, image_size):
-    processed_dir = data_path + '/processed_images'
+def resize_images(data_path, image_size=224):
+    processed_dir = data_path + "/resized_images"
     if not os.path.isdir(processed_dir):
         os.mkdir(processed_dir)
 
@@ -19,9 +19,14 @@ def resize_images(data_path, image_size):
     for file in files:
       image = cv2.imread(file)
       image = cv2.resize(image, (image_size, image_size),0,0)
-      cv2.imwrite(processed_dir + '/' + file[file.rindex("\\")+1:], image)
-      os.remove(file)
+      if os.name == 'nt':
+        cv2.imwrite(processed_dir + '/' + file[file.rindex("\\")+1:], image)
+      elif os.name == 'posix':
+        cv2.imwrite(processed_dir + '/' + file[file.rindex("/")+1:], image)
+      else:
+        print("Unsupported operating system. Please use Windows or Mac.")
+      
 
 
 if __name__ == "__main__":
-    resize_images('Terc_Images', 224)
+    resize_images('Terc_Images')
