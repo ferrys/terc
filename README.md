@@ -7,7 +7,6 @@ Packages and Installations required:
 Anaconda
 
 Exiftool
-
 bleach                    1.5.0                    
 ca-certificates           2017.7.27.1  
 certifi                   2016.2.28               
