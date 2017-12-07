@@ -29,14 +29,21 @@ with open(image_path + '/testing_data.csv', 'rt') as f:
 	for row in reader:
 		X_test_files.append(image_path + "\\" + row[0])
 
-all_images = glob.glob(image_path + '/*.jpg')
+# all_images = glob.glob(image_path + '/*.jpg')
 
-for file in all_images:
-	if file in X_test_files:
-	  image = cv2.imread(file, cv2.INTER_LINEAR)
-	  image = image.astype(np.float)
-	  image = np.multiply(image, 1.0 / 255.0)
-	  X_test.append(image)
+for file in X_test_files:
+	img = file + '/*.jpg'
+	image = cv2.imread(img, cv2.INTER_LINEAR)
+	image = image.astype(np.float)
+	image = np.multiply(image, 1.0 / 255.0)
+	X_test.append(image)
+
+# for file in all_images:
+# 	if file in X_test_files:
+# 	  image = cv2.imread(file, cv2.INTER_LINEAR)
+# 	  image = image.astype(np.float)
+# 	  image = np.multiply(image, 1.0 / 255.0)
+# 	  X_test.append(image)
 
 X_test = np.array(X_test)
 
