@@ -71,8 +71,6 @@ def f1(y_true, y_pred):
     return 2*((precision*recall)/(precision+recall))
 
 
-
-
 # load test data
 train_path = 'Terc_Images\\processed_images'
 validation_size = 0.2

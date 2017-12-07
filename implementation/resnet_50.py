@@ -22,6 +22,7 @@ from keras import backend as K
 import pandas as pd
 from matplotlib import pyplot as plt
 import accuracy
+import predictions
 
 
 
@@ -51,6 +52,7 @@ def precision(y_true, y_pred):
         predicted_positives = K.sum(K.round(K.clip(y_pred, 0, 1)))
         precision = true_positives / (predicted_positives + K.epsilon())
         return precision
+
 def f1(y_true, y_pred):
     def recall(y_true, y_pred):
         """Recall metric.
@@ -102,12 +104,6 @@ def resnet50_model(img_rows, img_cols, color_type=1, num_classes=None):
 
     model = resnet50.ResNet50(weights='imagenet', include_top=True)
 
-    #output = model(input)
-
-    # x = Flatten(name='flatten')
-    # x = Dense(1000, activation='relu', name='fc1')(x)
-    # x = Dense(1000, activation='relu', name='fc2')(x)
-
     x = Dense(num_classes, activation='sigmoid', name='predictions')(model.layers[-2].output)
 
     model = Model(input=model.input, output=x)
@@ -119,7 +115,6 @@ def resnet50_model(img_rows, img_cols, color_type=1, num_classes=None):
     return model
 
 if __name__ == '__main__':
-
     # Example to fine-tune on 3000 samples from Cifar10
     lr = 1e-2
     train_path = 'Terc_Images\\processed_images'
@@ -162,7 +157,6 @@ if __name__ == '__main__':
     model.save_weights('model.h5')
     print("Saved model to disk!")
 
-
     # get values from training
     train_loss = hist.history['loss']
     train_f1 = hist.history['f1']
@@ -185,57 +179,24 @@ if __name__ == '__main__':
     print(val_df)
     val_df.to_csv("validation_output_"+str(lr)+".csv")
 
-    # graph loss
-    plt.plot(train_loss)
-    plt.plot(val_loss)
-    plt.xlabel('epoch')
-    plt.ylabel('loss')
-    plt.title("Loss For Training vs. Validation Data")
-    plt.legend(['train', 'validation'])
-    plt.savefig('loss_graph_'+str(lr)+'.png')
-
-    # graph f1
-    plt.plot(train_f1)
-    plt.plot(val_f1)
-    plt.xlabel('epoch')
-    plt.ylabel('f1 score')
-    plt.title("F1 Score For Training vs. Validation Data")
-    plt.legend(['train', 'validation'])
-    plt.savefig('f1_graph_'+str(lr)+'.png')
-
-    # graph precision
-    plt.plot(train_precision)
-    plt.plot(val_precision)
-    plt.xlabel('epoch')
-    plt.ylabel('precision')
-    plt.title("Precision For Training vs. Validation Data")
-    plt.legend(['train', 'validation'])
-    plt.savefig('precision_graph_'+str(lr)+'.png')
-
-    # graph recall
-    plt.plot(train_recall)
-    plt.plot(val_recall)
-    plt.xlabel('epoch')
-    plt.ylabel('recall')
-    plt.title("Recall For Training vs. Validation Data")
-    plt.legend(['train', 'validation'])
-    plt.savefig('recall_graph_'+str(lr)+'.png')
-
 
     # Make predictions
     predictions_valid = model.predict(X_valid, batch_size=batch_size, verbose=1)
-
     predictions = [[1 if predictions_valid[i][j] > 0.5 else 0 for j in range(predictions_valid.shape[1])] for i in range(predictions_valid.shape[0])]
 
-    predictions = np.asarray(predictions)
-    np.savetxt('predictions_'+str(lr)+'.csv', predictions, delimiter=",")
+    validation_images = 'validation_data.csv'
+    ids = predictions.get_ids(validation_images)
 
+    predictions.save_predictions(ids, predictions)
+
+
+    #Display accuracy
     print("Accuracy for {}".format(lr))
     valid_category_accuracy = accuracy.get_category_accuracy('Terc_Images\\processed_images\\validation_data.csv','predictions_' + str(lr) + '.csv')
     valid_overall_accuracy = accuracy.get_overall_accuracy('Terc_Images\\processed_images\\validation_data.csv','predictions_' + str(lr) + '.csv')
     print(valid_overall_accuracy)
-    print(valid_category_accuracy)
-
-    # Cross-entropy loss score
-    score = log_loss(y_valid, predictions_valid)
-
+    
+    # Display cross-entropy loss 
+    print("Cross-entropy loss for {}".format(lr))
+    loss_score = log_loss(y_valid, predictions_valid)
+    print(loss_score)
