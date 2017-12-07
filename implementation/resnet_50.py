@@ -183,20 +183,23 @@ if __name__ == '__main__':
     # Make predictions
     predictions_valid = model.predict(X_valid, batch_size=batch_size, verbose=1)
     predictions_valid = [[1 if predictions_valid[i][j] > 0.5 else 0 for j in range(predictions_valid.shape[1])] for i in range(predictions_valid.shape[0])]
+    predictions_valid = np.array(predictions_valid)
+
 
     validation_images = 'Terc_Images\\processed_images\\validation_data.csv'
     ids = predictions.get_ids(validation_images)
 
-    predictions.save_predictions(ids, predictions_valid)
+    predictions.save_predictions(ids, predictions_valid, 'validation', '_' + str(lr))
 
+    pred_path = 'predictions/predictions_validation_' + str(lr) + '.csv'
 
     #Display accuracy
-    print("Accuracy for {}".format(lr))
-    valid_category_accuracy = accuracy.get_category_accuracy('Terc_Images\\processed_images\\validation_data.csv','predictions_' + str(lr) + '.csv')
-    valid_overall_accuracy = accuracy.get_overall_accuracy('Terc_Images\\processed_images\\validation_data.csv','predictions_' + str(lr) + '.csv')
+    print("Validation accuracy for lr={}".format(lr))
+    valid_category_accuracy = accuracy.get_category_accuracy('Terc_Images\\processed_images\\validation_data.csv', pred_path, 'validation', '_' + str(lr))
+    valid_overall_accuracy = accuracy.get_overall_accuracy('Terc_Images\\processed_images\\validation_data.csv', pred_path)
     print(valid_overall_accuracy)
     
     # Display cross-entropy loss 
-    print("Cross-entropy loss for {}".format(lr))
+    print("Validation cross-entropy loss for lr={}".format(lr))
     loss_score = log_loss(y_valid, predictions_valid)
     print(loss_score)

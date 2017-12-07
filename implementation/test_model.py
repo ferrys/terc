@@ -13,63 +13,8 @@ from keras import backend as K
 
 from keras.models import model_from_json
 
-
-def recall(y_true, y_pred):
-    """Recall metric.
-
-    Only computes a batch-wise average of recall.
-
-    Computes the recall, a metric for multi-label classification of
-    how many relevant items are selected.
-    """
-    true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
-    possible_positives = K.sum(K.round(K.clip(y_true, 0, 1)))
-    recall = true_positives / (possible_positives + K.epsilon())
-    return recall
-
-
-def precision(y_true, y_pred):
-        """Precision metric.
-
-        Only computes a batch-wise average of precision.
-
-        Computes the precision, a metric for multi-label classification of
-        how many selected items are relevant.
-        """
-        true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
-        predicted_positives = K.sum(K.round(K.clip(y_pred, 0, 1)))
-        precision = true_positives / (predicted_positives + K.epsilon())
-        return precision
-def f1(y_true, y_pred):
-    def recall(y_true, y_pred):
-        """Recall metric.
-
-        Only computes a batch-wise average of recall.
-
-        Computes the recall, a metric for multi-label classification of
-        how many relevant items are selected.
-        """
-        true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
-        possible_positives = K.sum(K.round(K.clip(y_true, 0, 1)))
-        recall = true_positives / (possible_positives + K.epsilon())
-        return recall
-
-    def precision(y_true, y_pred):
-        """Precision metric.
-
-        Only computes a batch-wise average of precision.
-
-        Computes the precision, a metric for multi-label classification of
-        how many selected items are relevant.
-        """
-        true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
-        predicted_positives = K.sum(K.round(K.clip(y_pred, 0, 1)))
-        precision = true_positives / (predicted_positives + K.epsilon())
-        return precision
-    precision = precision(y_true, y_pred)
-    recall = recall(y_true, y_pred)
-    return 2*((precision*recall)/(precision+recall))
-
+import accuracy
+import predictions
 
 # load test data
 train_path = 'Terc_Images\\processed_images'
@@ -95,12 +40,21 @@ json_file.close()
 
 loaded_model = model_from_json(loaded_model_json)
 loaded_model.load_weights('model.h5')
-# loaded_model.compile(optimizer=sgd, loss='binary_crossentropy', metrics=['accuracy', f1, recall, precision])
+
+# Make predictions
 predictions_test = loaded_model.predict(X_test, batch_size=batch_size, verbose=1)
-predictions = [[1 if predictions_test[i][j] > 0.5 else 0 for j in range(predictions_test.shape[1])] for i in range(predictions_test.shape[0])]
+predictions_test = [[1 if predictions_test[i][j] > 0.5 else 0 for j in range(predictions_test.shape[1])] for i in range(predictions_test.shape[0])]
+predictions_test = np.array(predictions_test)
 
-predictions = np.asarray(predictions)
-np.savetxt('predictions_test.csv', predictions, delimiter=",")
+test_images = 'Terc_Images\\processed_images\\testing_data.csv'
+ids = predictions.get_ids(test_images)
 
+predictions.save_predictions(ids, predictions_test, 'testing')
 
+pred_path = 'predictions/predictions_testing.csv'
 
+# Display accuracy
+print("Testing accuracy")
+test_category_accuracy = accuracy.get_category_accuracy('Terc_Images\\processed_images\\testing_data.csv', pred_path, 'testing')
+test_overall_accuracy = accuracy.get_overall_accuracy('Terc_Images\\processed_images\\testing_data.csv', pred_path)
+print(test_overall_accuracy)

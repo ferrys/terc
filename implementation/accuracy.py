@@ -4,10 +4,12 @@ import numpy as np
 import os
 
 
-def get_category_accuracy(true_path, pred_path):
+def get_category_accuracy(true_path, pred_path, phase, lr=''):
     real = pd.DataFrame.from_csv(true_path).as_matrix()
-    pred = pd.DataFrame.from_csv(pred_path,header=None).reset_index().as_matrix()
-    
+    # pred = pd.DataFrame.from_csv(pred_path,header=None).reset_index().as_matrix()
+    pred = pd.DataFrame.from_csv(pred_path).reset_index()
+    pred = pred.drop(['id'],axis=1).as_matrix().astype(int)
+
     # PER CATEGORY ACCURACY
     category_accuracy = np.zeros(13)
 
@@ -27,7 +29,7 @@ def get_category_accuracy(true_path, pred_path):
     if not os.path.exists('accuracy'):
         os.mkdir('accuracy')
 
-    with open('accuracy/category_accuracy.csv', 'w') as f:
+    with open('accuracy/category_accuracy_' + phase + lr + '.csv', 'w') as f:
         for tag in tags:
             f.write(tag + ',')
         f.write('\n')
@@ -38,9 +40,10 @@ def get_category_accuracy(true_path, pred_path):
 
 def get_overall_accuracy(true_path, pred_path):
     real = pd.DataFrame.from_csv(true_path).as_matrix()
-    pred = pd.DataFrame.from_csv(pred_path, header=None).reset_index().as_matrix()
-    ## OVERALL ACCURACY
+    pred = pd.DataFrame.from_csv(pred_path).reset_index()
+    pred = pred.drop(['id'],axis=1).as_matrix().astype(int)
 
+    ## OVERALL ACCURACY
     total_correct = 0
     if real.shape[1] >= 12:
         real = real[:,:12]
