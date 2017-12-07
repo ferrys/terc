@@ -4,7 +4,11 @@ CS 542 Group Project
 
 Packages and Installations required:
 Anaconda
+
+
 Exiftool
+
+
 bleach                    1.5.0                     <pip>
 ca-certificates           2017.7.27.1                   0    conda-forge
 certifi                   2016.2.28                py36_0
