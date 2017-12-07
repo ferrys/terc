@@ -25,6 +25,7 @@ def resize_images(data_path, image_size=224):
         cv2.imwrite(processed_dir + '/' + file[file.rindex("/")+1:], image)
       else:
         print("Unsupported operating system. Please use Windows or Mac.")
+    return processed_dir
       
 
 
