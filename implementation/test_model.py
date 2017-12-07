@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import dataset
+import csv
 import numpy as np
+import glob
+import cv2
 
 from keras.optimizers import SGD
 from keras import backend as K
@@ -17,20 +19,26 @@ import accuracy
 import predictions
 
 # load test data
-train_path = 'Terc_Images\\processed_images'
-validation_size = 0.2
-test_size = 0.2
-batch_size = 10
-img_rows, img_cols, img_size = 224, 224, 224
+image_path = 'Terc_Images\\processed_images'
+X_test_files = []
+X_test = []
 
-# Prepare input data
-classes = ['Volcano', 'Sunrise Sunset', 'ISS Structure', 'Stars', 'Night', 'Aurora', 'Movie', 'Day', 'Moon',
-           'Inside ISS', 'Dock Undock', 'Cupola']
+with open(image_path + '/testing_data.csv', 'rt') as f:
+	reader = csv.reader(f, delimiter = ',')
+	next(reader, None)
+	for row in reader:
+		X_test_files.append(image_path + "\\" + row[0])
 
-# We shall load all the training and validation images and labels into memory using openCV and use that during training
-_, _, _, _, X_test, y_test = dataset.read_train_sets(train_path, img_size, classes,
-                                                                   validation_size=validation_size, test_size=test_size)
+all_images = glob.glob(image_path + '/*.jpg')
 
+for file in all_images:
+	if file in X_test_files:
+	  image = cv2.imread(file, cv2.INTER_LINEAR)
+	  image = image.astype(np.float)
+	  image = np.multiply(image, 1.0 / 255.0)
+	  X_test.append(image)
+
+X_test = np.array(X_test)
 
 # load model
 json_file = open('model.json', 'r')
