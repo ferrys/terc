@@ -5,7 +5,6 @@ CS 542 Group Project
 Packages and Installations required:
 
 Anaconda
-
 Exiftool
 bleach                    1.5.0                    
 ca-certificates           2017.7.27.1  
