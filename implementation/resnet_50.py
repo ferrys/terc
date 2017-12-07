@@ -126,7 +126,7 @@ if __name__ == '__main__':
 
     channel = 3
     batch_size = 16
-    nb_epoch = 10
+    nb_epoch = 3
 
     # Prepare input data
     classes = ['Volcano', 'Sunrise Sunset', 'ISS Structure', 'Stars', 'Night', 'Aurora', 'Movie', 'Day', 'Moon',
@@ -182,12 +182,12 @@ if __name__ == '__main__':
 
     # Make predictions
     predictions_valid = model.predict(X_valid, batch_size=batch_size, verbose=1)
-    predictions = [[1 if predictions_valid[i][j] > 0.5 else 0 for j in range(predictions_valid.shape[1])] for i in range(predictions_valid.shape[0])]
+    predictions_valid = [[1 if predictions_valid[i][j] > 0.5 else 0 for j in range(predictions_valid.shape[1])] for i in range(predictions_valid.shape[0])]
 
-    validation_images = 'validation_data.csv'
+    validation_images = 'Terc_Images\\processed_images\\validation_data.csv'
     ids = predictions.get_ids(validation_images)
 
-    predictions.save_predictions(ids, predictions)
+    predictions.save_predictions(ids, predictions_valid)
 
 
     #Display accuracy
