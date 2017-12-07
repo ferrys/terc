@@ -1,6 +1,7 @@
 import csv
 import pandas as pd
 import numpy as np
+import os
 
 
 def get_category_accuracy(true_path, pred_path):
@@ -8,7 +9,7 @@ def get_category_accuracy(true_path, pred_path):
     pred = pd.DataFrame.from_csv(pred_path,header=None).reset_index().as_matrix()
     
     # PER CATEGORY ACCURACY
-    accuracy = np.zeros(12)
+    category_accuracy = np.zeros(13)
 
     if real.shape[1] >= 12:
         real = real[:,:12]
@@ -17,18 +18,23 @@ def get_category_accuracy(true_path, pred_path):
         for i in range(real.shape[0]):
             if real[i][j] == pred[i][j]:
                 total_correct += 1
-        accuracy[j] = total_correct/real.shape[0]
+        category_accuracy[j] = total_correct/real.shape[0]
 
-    tags = ['Volcano', 'Sunrise Sunset', 'ISS Structure', 'Stars', 'Night', 'Aurora', 'Movie', 'Day', 'Moon', 'Inside ISS', 'Dock Undock', 'Cupola']
+    tags = ['Volcano', 'Sunrise Sunset', 'ISS Structure', 'Stars', 'Night', 'Aurora', 'Movie', 'Day', 'Moon', 'Inside ISS', 'Dock Undock', 'Cupola', 'Overall']
 
-    with open('category_accuracy.csv', 'w') as f:
+    category_accuracy[-1] = get_overall_accuracy(true_path,pred_path)
+
+    if not os.path.exists('accuracy'):
+        os.mkdir('accuracy')
+
+    with open('accuracy/category_accuracy.csv', 'w') as f:
         for tag in tags:
             f.write(tag + ',')
         f.write('\n')
-        for tag_accuracy in accuracy:
+        for tag_accuracy in category_accuracy:
             f.write(str(tag_accuracy) + ',')
         f.close()
-    return accuracy
+    return category_accuracy
 
 def get_overall_accuracy(true_path, pred_path):
     real = pd.DataFrame.from_csv(true_path).as_matrix()

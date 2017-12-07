@@ -32,10 +32,5 @@ def save_predictions(ids, predictions):
 
 predictions_valid = np.array([[.56,.02,.73],[.01,.84,.51],[.02,.1,.9]])
 predictions = [[1 if predictions_valid[i][j] > 0.5 else 0 for j in range(predictions_valid.shape[1])] for i in range(predictions_valid.shape[0])]
-predictions = np.asarray(predictions) 
-
-
-ids = get_ids('validation_data_test.csv')
-
-save_predictions(ids, predictions)
+predictions = np.asarray(predictions)
 
