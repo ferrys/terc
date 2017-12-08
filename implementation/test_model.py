@@ -29,21 +29,11 @@ with open(image_path + '/testing_data.csv', 'rt') as f:
 	for row in reader:
 		X_test_files.append(image_path + "\\" + row[0])
 
-# all_images = glob.glob(image_path + '/*.jpg')
-
 for file in X_test_files:
-	img = file + '/*.jpg'
-	image = cv2.imread(img, cv2.INTER_LINEAR)
+	image = cv2.imread(file, cv2.INTER_LINEAR)
 	image = image.astype(np.float)
 	image = np.multiply(image, 1.0 / 255.0)
 	X_test.append(image)
-
-# for file in all_images:
-# 	if file in X_test_files:
-# 	  image = cv2.imread(file, cv2.INTER_LINEAR)
-# 	  image = image.astype(np.float)
-# 	  image = np.multiply(image, 1.0 / 255.0)
-# 	  X_test.append(image)
 
 X_test = np.array(X_test)
 
@@ -51,6 +41,8 @@ X_test = np.array(X_test)
 json_file = open('model.json', 'r')
 loaded_model_json = json_file.read()
 json_file.close()
+
+batch_size = 16
 
 
 loaded_model = model_from_json(loaded_model_json)
