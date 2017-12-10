@@ -1,6 +1,23 @@
 # terc
 CS 542 Group Project
 
+To reproduce our training results:
+1. Install all of the required packages
+2. Create a folder named Terc_images with all of the tagged images that you would like to use to train the model
+3. Run the extract_tags.py program which will analyze the images and create a csv file with each image name and their respective tags
+4. Run resize.py which will resize the images to be 224x224
+5. Run resnet_50.py which will split the images into Training, Validation, and Test data and then will train on the training data and then run this trained model and return the predictions on the validation data
+
+To test the trained model:
+1. Follow the above steps to train the model and acquire the required files
+2. Run test_model.py, which will load the trained model and run it on the test data, and will return a csv file with the accuracies obtained on the test data
+
+To run the trained model on real untagged images:
+1. Download the terc_model folder from the GitHub: https://github.com/ferrys/terc/tree/master/terc_model
+2. Create a folder FOLDER_NAME within the terc_model folder that contains all of the untagged images you would like to tag
+3. Run terc_model.py with FOLDER_NAME as an argument in the command line. (Example: "python terc_model.py FOLDER_NAME") would run the neural network on the folder FOLDER_NAME
+4. This will run the trained model on all of the images in the folder and will insert tags into the EXIF metadata of each image based on the tags that the model predicts
+
 
 Packages and Installations required:
 
@@ -54,9 +71,4 @@ wincertstore              0.2
 zlib                      1.2.11                   
 
 
-To reproduce our training results:
-1. Install all of the required packages
-2. Create a folder named Terc_images with all of the tagged images that you would like to use to train the model
-3. Run the extract_tags.py program which will analyze the images and create a csv file with each image name and their respective tags
-4. Run resize.py which will resize the images to be 224x224
-5. Run resnet_50.py which will split the images into Training, Validation, and Test data and then will train on the training data and then run this trained model and return the predictions on the validation data.
+
