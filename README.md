@@ -52,3 +52,11 @@ wheel                     0.29.0
 wheel                     0.30.0                   
 wincertstore              0.2                      
 zlib                      1.2.11                   
+
+
+To reproduce our training results:
+1. Install all of the required packages
+2. Create a folder named Terc_images with all of the tagged images that you would like to use to train the model
+3. Run the extract_tags.py program which will analyze the images and create a csv file with each image name and their respective tags
+4. Run resize.py which will resize the images to be 224x224
+5. Run resnet_50.py which will split the images into Training, Validation, and Test data and then will train on the training data and then run this trained model and return the predictions on the validation data.
