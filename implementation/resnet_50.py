@@ -116,7 +116,7 @@ if __name__ == '__main__':
 
     channel = 3
     batch_size = 16
-    nb_epoch = 3
+    nb_epoch = 50
 
     # Prepare input data
     classes = ['Volcano', 'Sunrise Sunset', 'ISS Structure', 'Stars', 'Night', 'Aurora', 'Movie', 'Day', 'Moon',
