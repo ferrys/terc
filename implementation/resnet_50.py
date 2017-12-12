@@ -83,7 +83,7 @@ def resnet50_model(img_rows, img_cols, color_type=1, num_classes=None):
     Resnet 50 Model for Keras
 
     Model Schema is based on
-    https://github.com/fchollet/deep-learning-models/blob/master/resnet50.py
+    https://github.com/flyyufelix/cnn_finetune
 
     Parameters:
       img_rows, img_cols - resolution of inputs
@@ -101,6 +101,7 @@ def resnet50_model(img_rows, img_cols, color_type=1, num_classes=None):
     model = Model(input=model.input, output=x)
 
     sgd = SGD(lr=1e-2, decay=1e-6, momentum=0.9, nesterov=True)
+
     model.compile(optimizer=sgd, loss='binary_crossentropy', metrics=['accuracy', f1, recall, precision])
   
     return model
